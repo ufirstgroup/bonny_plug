@@ -8,7 +8,7 @@ defmodule BonnyPlug.MixProject do
     [
       app: :bonny_plug,
       version: @version,
-      elixir: "~> 1.11",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       package: package(),
       preferred_cli_env: cli_env(),
