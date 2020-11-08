@@ -2,8 +2,8 @@ defmodule BonnyPlug.WebhookPlugTset do
   use ExUnit.Case, async: true
   use Plug.Test
 
-  alias BonnyPlug.WebhookPlug, as: MUT
   alias BonnyPlug.TestWebhookHandlerCRD
+  alias BonnyPlug.WebhookPlug, as: MUT
 
   describe "call/2" do
     test "return 404 if not POST request" do

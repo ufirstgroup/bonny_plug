@@ -1,7 +1,7 @@
 defmodule BonnyPlug.WebhookHandlerTest do
   use ExUnit.Case
 
-  alias BonnyPlug.{TestWebhookHandlerCRD, TestWebhookHandlerCRDV1Beta1, TestWebhookHandlerResource, AdmissionReview}
+  alias BonnyPlug.{AdmissionReview, TestWebhookHandlerCRD, TestWebhookHandlerCRDV1Beta1, TestWebhookHandlerResource}
 
   import CompileTimeAssertions
 
@@ -35,28 +35,58 @@ defmodule BonnyPlug.WebhookHandlerTest do
     test "processes a request if CRD matches" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRD])
 
-      assert %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v1", "resource" => "testcrds"}}, response: %{"allowed" => false}} == TestWebhookHandlerCRD.process(
-               %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v1", "resource" => "testcrds"}}, response: %{}},
-               :validating_webhook
-             )
+      admission_review = %AdmissionReview{
+        request: %{
+          "uid" => "some_uid",
+          "resource" => %{
+            "group" => "bonny-plug.ufirst.io",
+            "version" => "v1",
+            "resource" => "testcrds"
+          }
+        },
+        response: %{}
+      }
+
+      admission_review = TestWebhookHandlerCRD.process(admission_review, :validating_webhook)
+      assert false == admission_review.response["allowed"]
     end
 
     test "processes a request if CRD v1beta1 matches" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRDV1Beta1])
 
-      assert %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v1", "resource" => "testcrds"}}, response: %{"allowed" => false}} == TestWebhookHandlerCRDV1Beta1.process(
-               %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v1", "resource" => "testcrds"}}, response: %{}},
-               :validating_webhook
-             )
+      admission_review = %AdmissionReview{
+        request: %{
+          "uid" => "some_uid",
+          "resource" => %{
+            "group" => "bonny-plug.ufirst.io",
+            "version" => "v1",
+            "resource" => "testcrds"
+          }
+        },
+        response: %{}
+      }
+
+      admission_review = TestWebhookHandlerCRDV1Beta1.process(admission_review, :validating_webhook)
+      assert false == admission_review.response["allowed"]
     end
 
     test "processes a request if resource matches" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerResource])
 
-      assert %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "apps", "version" => "v1", "resource" => "deployments"}}, response: %{"allowed" => false}} == TestWebhookHandlerResource.process(
-               %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "apps", "version" => "v1", "resource" => "deployments"}}, response: %{}},
-               :validating_webhook
-             )
+      admission_webhook = %AdmissionReview{
+        request: %{
+          "uid" => "some_uid",
+          "resource" => %{
+            "group" => "apps",
+            "version" => "v1",
+            "resource" => "deployments"
+          }
+        },
+        response: %{}
+      }
+
+      admission_review = TestWebhookHandlerResource.process(admission_webhook, :validating_webhook)
+      assert false == admission_review.response["allowed"]
     end
 
     test "does not process request if no resource given" do
@@ -67,7 +97,17 @@ defmodule BonnyPlug.WebhookHandlerTest do
 
     test "does not process request for versions that are not served" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRD])
-      admission_review = %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v2", "resource" => "testcrds"}}, response: %{}}
+      admission_review = %AdmissionReview{
+        request: %{
+          "uid" => "some_uid",
+          "resource" => %{
+            "group" => "bonny-plug.ufirst.io",
+            "version" => "v2",
+            "resource" => "testcrds"
+          }
+        },
+        response: %{}
+      }
       assert admission_review == TestWebhookHandlerCRD.process(
         admission_review,
         :validating_webhook
@@ -76,7 +116,17 @@ defmodule BonnyPlug.WebhookHandlerTest do
 
     test "does not process request if group does not match" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRD])
-      admission_review = %AdmissionReview{request: %{"uid" => "some_uid", "resource" => %{"group" => "some-group", "version" => "v1", "resource" => "testcrds"}}, response: %{}}
+      admission_review = %AdmissionReview{
+        request: %{
+          "uid" => "some_uid",
+          "resource" => %{
+            "group" => "some-group",
+            "version" => "v1",
+            "resource" => "testcrds"
+          }
+        },
+        response: %{}
+      }
       assert admission_review == TestWebhookHandlerCRD.process(
         admission_review,
         :validating_webhook

@@ -65,8 +65,8 @@ defmodule BonnyPlug.WebhookHandler do
 
   require Logger
 
-  alias BonnyPlug.AdmissionReview.Request
   alias BonnyPlug.AdmissionReview
+  alias BonnyPlug.AdmissionReview.Request
 
   @callback mutating_webhook(AdmissionReview.t()) :: AdmissionReview.t()
   @callback validating_webhook(AdmissionReview.t()) :: AdmissionReview.t()
