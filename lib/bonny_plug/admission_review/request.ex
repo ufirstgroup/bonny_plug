@@ -54,13 +54,14 @@ defmodule BonnyPlug.AdmissionReview.Request do
   Adds a warning to the admission review's response.
 
   ## Examples
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
-    ...> BonnyPlug.AdmissionReview.Request.add_warning(admission_review, "warning")
-    %BonnyPlug.AdmissionReview{request: %{}, response: %{"warnings" => ["warning"]}}
 
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{"warnings" => ["existing_warning"]}}
-    ...> BonnyPlug.AdmissionReview.Request.add_warning(admission_review, "new_warning")
-    %BonnyPlug.AdmissionReview{request: %{}, response: %{"warnings" => ["new_warning", "existing_warning"]}}
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.add_warning(admission_review, "warning")
+      %BonnyPlug.AdmissionReview{request: %{}, response: %{"warnings" => ["warning"]}}
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{"warnings" => ["existing_warning"]}}
+      ...> BonnyPlug.AdmissionReview.Request.add_warning(admission_review, "new_warning")
+      %BonnyPlug.AdmissionReview{request: %{}, response: %{"warnings" => ["new_warning", "existing_warning"]}}
   """
   @spec add_warning(AdmissionReview.t(), binary()) :: AdmissionReview.t()
   def add_warning(admission_review, warning) do
@@ -71,13 +72,14 @@ defmodule BonnyPlug.AdmissionReview.Request do
   Verifies that a given field has not been mutated.
 
   ## Examples
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{}}
-    ...> BonnyPlug.AdmissionReview.Request.check_immutable(admission_review, ["spec", "immutable"])
-    %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{}}
 
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "new_value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{}}
-    ...> BonnyPlug.AdmissionReview.Request.check_immutable(admission_review, ["spec", "immutable"])
-    %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "new_value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{"allowed" => false, "status" => %{"code" => 400, "message" => "The field .spec.immutable is immutable."}}}
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.check_immutable(admission_review, ["spec", "immutable"])
+      %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{}}
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "new_value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.check_immutable(admission_review, ["spec", "immutable"])
+      %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "new_value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{"allowed" => false, "status" => %{"code" => 400, "message" => "The field .spec.immutable is immutable."}}}
   """
   @spec check_immutable(AdmissionReview.t(), Enum.t()) :: AdmissionReview.t()
   def check_immutable(admission_review, field) do

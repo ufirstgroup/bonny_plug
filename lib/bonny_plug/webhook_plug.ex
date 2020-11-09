@@ -1,7 +1,6 @@
 defmodule BonnyPlug.WebhookPlug do
   @moduledoc """
-  Plug that processes incoming admission webhook requests. Valid requests are forwarded to
-  `BonnyPlug.WebhookHandler.handle_webhook/2`.
+  Plug that processes incoming admission webhook requests. Valid requests are forwarded to given webhook handlers.
 
   You have to specify the `:webhook_type` you want to forward to this plug. The `:webhook_type` has to be be either
   `:validating_webhook` or `:mutating_webhook`.
