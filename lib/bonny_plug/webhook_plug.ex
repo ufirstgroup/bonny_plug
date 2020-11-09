@@ -9,13 +9,13 @@ defmodule BonnyPlug.WebhookPlug do
 
   In a Phoenix router you would forward post requests to this plug:
 
-    post "/admission-review/validate", BonnyPlug.WebhookPlug,
-      webhook_type: :validating_webhook,
-      handlers: [MyApp.WebhookHandlers.FooResourceWebhookHandler]
+      post "/admission-review/validate", BonnyPlug.WebhookPlug,
+        webhook_type: :validating_webhook,
+        handlers: [MyApp.WebhookHandlers.FooResourceWebhookHandler]
 
-    post "/admission-review/mutate", BonnyPlug.WebhookPlug,
-      webhook_type: :mutating_webhook,
-      handlers: [MyApp.WebhookHandlers.FooResourceWebhookHandler]
+      post "/admission-review/mutate", BonnyPlug.WebhookPlug,
+        webhook_type: :mutating_webhook,
+        handlers: [MyApp.WebhookHandlers.FooResourceWebhookHandler]
 
   """
 

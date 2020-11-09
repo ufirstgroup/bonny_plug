@@ -27,36 +27,40 @@ defmodule BonnyPlug.WebhookHandler do
 
   ## Examples
 
-    defmodule FooAdmissionWebhookHandler do
-      use BonnyPlug.WebhookHandler, crd: "manifest/src/crds/foo.crd.yaml"
+  ```
+  defmodule FooAdmissionWebhookHandler do
+    use BonnyPlug.WebhookHandler, crd: "manifest/src/crds/foo.crd.yaml"
 
-      @impl true
-      def validating_webhook(admission_review)  do
-        check_immutable(admission_review, ["spec", "someField"])
-      end
-
-      @impl true
-      def mutating_webhook(admission_review)  do
-        allow(admission_review)
-      end
+    @impl true
+    def validating_webhook(admission_review)  do
+      check_immutable(admission_review, ["spec", "someField"])
     end
 
-    defmodule BarAdmissionWebhookHandler do
-      use BonnyPlug.WebhookHandler,
-        group: "my.operator.com",
-        resource: "barresources",
-        api_versions: ["v1"]
-
-      @impl true
-      def validating_webhook(admission_review)  do
-        check_immutable(admission_review, ["spec", "someField"])
-      end
-
-      @impl true
-      def mutating_webhook(admission_review)  do
-        deny(admission_review)
-      end
+    @impl true
+    def mutating_webhook(admission_review)  do
+      allow(admission_review)
     end
+  end
+  ```
+
+  ```
+  defmodule BarAdmissionWebhookHandler do
+    use BonnyPlug.WebhookHandler,
+      group: "my.operator.com",
+      resource: "barresources",
+      api_versions: ["v1"]
+
+    @impl true
+    def validating_webhook(admission_review)  do
+      check_immutable(admission_review, ["spec", "someField"])
+    end
+
+    @impl true
+    def mutating_webhook(admission_review)  do
+      deny(admission_review)
+    end
+  end
+  ```
   """
 
   require Logger

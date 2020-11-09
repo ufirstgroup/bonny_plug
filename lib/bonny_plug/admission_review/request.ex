@@ -9,9 +9,10 @@ defmodule BonnyPlug.AdmissionReview.Request do
   Responds by allowing the operation
 
   ## Examples
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
-    ...> BonnyPlug.AdmissionReview.Request.allow(admission_review)
-    %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => true}}
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.allow(admission_review)
+      %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => true}}
   """
   @spec allow(AdmissionReview.t()) :: AdmissionReview.t()
   def allow(admission_review) do
@@ -22,9 +23,10 @@ defmodule BonnyPlug.AdmissionReview.Request do
   Responds by denying the operation
 
   ## Examples
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
-    ...> BonnyPlug.AdmissionReview.Request.deny(admission_review)
-    %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => false}}
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.deny(admission_review)
+      %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => false}}
   """
   @spec deny(AdmissionReview.t()) :: AdmissionReview.t()
   def deny(admission_review) do
@@ -35,12 +37,13 @@ defmodule BonnyPlug.AdmissionReview.Request do
   Responds by denying the operation, returning response code and message
 
   ## Examples
-    iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
-    ...> BonnyPlug.AdmissionReview.Request.deny(admission_review, 403, "foo")
-    %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => false, "status" => %{"code" => 403, "message" => "foo"}}}
 
-    iex> BonnyPlug.AdmissionReview.Request.deny(%BonnyPlug.AdmissionReview{request: %{}, response: %{}}, "foo")
-    %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => false, "status" => %{"code" => 400, "message" => "foo"}}}
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.deny(admission_review, 403, "foo")
+      %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => false, "status" => %{"code" => 403, "message" => "foo"}}}
+
+      iex> BonnyPlug.AdmissionReview.Request.deny(%BonnyPlug.AdmissionReview{request: %{}, response: %{}}, "foo")
+      %BonnyPlug.AdmissionReview{request: %{}, response: %{"allowed" => false, "status" => %{"code" => 400, "message" => "foo"}}}
   """
   @spec deny(AdmissionReview.t(), integer(), binary()) :: AdmissionReview.t()
   @spec deny(AdmissionReview.t(), binary()) :: AdmissionReview.t()
