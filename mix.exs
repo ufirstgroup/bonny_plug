@@ -2,7 +2,7 @@ defmodule BonnyPlug.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/ufirstgroup/bonny_plug"
-  @version "1.0.0"
+  @version "1.0.1"
 
   def project do
     [
@@ -46,6 +46,7 @@ defmodule BonnyPlug.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:jason, "~> 1.2"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
