@@ -48,8 +48,10 @@ defmodule BonnyPlug.WebhookPlugTest do
     end
 
     test "returns allow: true if webhook not handled" do
+      opts = MUT.init(webhook_type: :validating_webhook, handlers: [TestWebhookHandlerCRD])
+
       body = conn(:post, "/some_url", %{"apiVersion" => "admission.k8s.io/v1", "kind" => "AdmissionReview", "request" => %{"uid" => "some_uid"}})
-      |> MUT.call(webhook_type: :validating_webhook, handlers: [TestWebhookHandlerCRD])
+      |> MUT.call(opts)
       |> Map.get(:resp_body)
       |> Jason.decode!()
 
@@ -58,10 +60,25 @@ defmodule BonnyPlug.WebhookPlugTest do
     end
 
     test "returns handler's response if handler processes request" do
+      opts = MUT.init(webhook_type: :validating_webhook, handlers: [TestWebhookHandlerCRD])
+
       body = conn(:post, "/some_url", %{"apiVersion" => "admission.k8s.io/v1", "kind" => "AdmissionReview", "request" => %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v1", "resource" => "testcrds"}}})
-      |> MUT.call(webhook_type: :validating_webhook, handlers: [TestWebhookHandlerCRD])
+      |> MUT.call(opts)
       |> Map.get(:resp_body)
       |> Jason.decode!()
+
+      assert false == get_in(body, ~w(response allowed))
+      assert "some_uid" == get_in(body, ~w(response uid))
+    end
+
+    test "returns handler's response if handler passed via config" do
+      Application.put_env(:bonny_plug, BonnyPlug.WebhookPlug, handlers: [TestWebhookHandlerCRD])
+      opts = MUT.init(webhook_type: :validating_webhook)
+
+      body = conn(:post, "/some_url", %{"apiVersion" => "admission.k8s.io/v1", "kind" => "AdmissionReview", "request" => %{"uid" => "some_uid", "resource" => %{"group" => "bonny-plug.ufirst.io", "version" => "v1", "resource" => "testcrds"}}})
+             |> MUT.call(opts)
+             |> Map.get(:resp_body)
+             |> Jason.decode!()
 
       assert false == get_in(body, ~w(response allowed))
       assert "some_uid" == get_in(body, ~w(response uid))

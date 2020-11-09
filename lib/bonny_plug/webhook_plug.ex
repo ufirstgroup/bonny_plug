@@ -7,6 +7,8 @@ defmodule BonnyPlug.WebhookPlug do
 
   ## Examples
 
+  ### Compile time  configuration
+
   In a Phoenix router you would forward post requests to this plug:
 
       post "/admission-review/validate", BonnyPlug.WebhookPlug,
@@ -15,8 +17,30 @@ defmodule BonnyPlug.WebhookPlug do
 
       post "/admission-review/mutate", BonnyPlug.WebhookPlug,
         webhook_type: :mutating_webhook,
+        handlers: [MyApp.WebhookHandlers.BarResourceWebhookHandler]
+
+  ### Runtime configuration
+
+  In the example above, the handlers are defined at compile time. If you need to define the handlers at runtime, you
+  can define them in `config/runtime.exs`. Note that in this case, handlers are global for all instances of the plug,
+  unless declared at compile time like above.
+
+  Your `config/runtime.exs`:
+
+      import Config
+
+      config :bonny_plug, BonnyPlug.WebhookPlug
         handlers: [MyApp.WebhookHandlers.FooResourceWebhookHandler]
 
+  Your `router.ex`:
+
+      post "/admission-review/validate", BonnyPlug.WebhookPlug,
+        webhook_type: :validating_webhook
+        # handlers set at compile time according to config
+
+      post "/admission-review/mutate", BonnyPlug.WebhookPlug,
+        webhook_type: :mutating_webhook,
+        handlers: [MyApp.WebhookHandlers.BarResourceWebhookHandler] # NOT overwritten at compile time!
   """
 
   import Plug.Conn
@@ -29,9 +53,11 @@ defmodule BonnyPlug.WebhookPlug do
 
   @type webhook_type :: :validating_webhook | :mutating_webhook
 
-  # coveralls-ignore-start
-  def init(options), do: options
-  # coveralls-ignore-stop
+  def init(options) do
+    Keyword.put_new_lazy(options, :handlers, fn
+      -> Application.get_env(:bonny_plug, BonnyPlug.WebhookPlug)[:handlers]
+    end)
+  end
 
   def call(%Plug.Conn{method: "POST"} = conn, opts) do
     webhook_type = Keyword.fetch!(opts, :webhook_type)
