@@ -30,13 +30,11 @@ defmodule BonnyPlug.WebhookHandler do
     defmodule FooAdmissionWebhookHandler do
       use BonnyPlug.WebhookHandler, crd: "manifest/src/crds/foo.crd.yaml"
 
-      @spec validating_webhook(BonnyPlug.AdmissionReview.t()) :: BonnyPlug.AdmissionReview.t()
       @impl true
       def validating_webhook(admission_review)  do
         check_immutable(admission_review, ["spec", "someField"])
       end
 
-      @spec mutating_webhook(BonnyPlug.AdmissionReview.t()) :: BonnyPlug.AdmissionReview.t()
       @impl true
       def mutating_webhook(admission_review)  do
         allow(admission_review)
@@ -49,13 +47,11 @@ defmodule BonnyPlug.WebhookHandler do
         resource: "barresources",
         api_versions: ["v1"]
 
-      @spec validating_webhook(BonnyPlug.AdmissionReview.t()) :: BonnyPlug.AdmissionReview.t()
       @impl true
       def validating_webhook(admission_review)  do
         check_immutable(admission_review, ["spec", "someField"])
       end
 
-      @spec mutating_webhook(BonnyPlug.AdmissionReview.t()) :: BonnyPlug.AdmissionReview.t()
       @impl true
       def mutating_webhook(admission_review)  do
         deny(admission_review)
@@ -65,9 +61,9 @@ defmodule BonnyPlug.WebhookHandler do
 
   require Logger
 
-  alias BonnyPlug.AdmissionReview
-  alias BonnyPlug.AdmissionReview.Request
+  alias BonnyPlug.{AdmissionReview, WebhookPlug}
 
+  @callback process(AdmissionReview.t(), WebhookPlug.webhook_type()) :: AdmissionReview.t()
   @callback mutating_webhook(AdmissionReview.t()) :: AdmissionReview.t()
   @callback validating_webhook(AdmissionReview.t()) :: AdmissionReview.t()
   @optional_callbacks mutating_webhook: 1, validating_webhook: 1
@@ -90,6 +86,8 @@ defmodule BonnyPlug.WebhookHandler do
       @plural plural
       @api_versions api_versions
 
+      @impl true
+      @spec process(AdmissionReview.t(), WebhookPlug.webhook_type()) :: AdmissionReview.t()
       def process(
             %AdmissionReview{request: %{"resource" => %{"group" => @group, "version" => version, "resource" => @plural}}} = admission_review,
             webhook_type
@@ -130,13 +128,4 @@ defmodule BonnyPlug.WebhookHandler do
   end
   defp derive_api_versions(%{"spec" => %{"version" => version}}), do: [version]
   defp derive_api_versions(_), do: raise(ArgumentError, "CRD version not supported. Currently only CRD versions v1 and v1beta1 are supported.")
-
-  def handle_webhook(admission_review, webhook_type) do
-    # Allow per default
-    admission_review = Request.allow(admission_review)
-
-    Application.get_env(:bonny_plug, :admission_review_webhooks, [])
-    |> Enum.reduce(admission_review, fn (handler, acc) -> Kernel.apply(handler, :process, [acc, webhook_type]) end)
-  end
-
 end
