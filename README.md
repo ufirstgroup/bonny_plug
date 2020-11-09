@@ -16,7 +16,7 @@ be used on its own and has no dependencies to Bonny.
 ```elixir
 def deps do
   [
-    {:bonny_plugs, "~> 0.1"}
+    {:bonny_plugs, "~> 1.0"}
   ]
 end
 ```
