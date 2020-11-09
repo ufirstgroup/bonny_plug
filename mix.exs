@@ -73,7 +73,7 @@ defmodule BonnyPlug.MixProject do
     [
       name: :bonny_plug,
       description: "Kubernetes Admission Webooks Plug",
-      files: ["lib", "config", "mix.exs", "README*"],
+      files: ["lib", "mix.exs", "README*"],
       maintainers: ["Michael Ruoss", "Jean-Luc Geering"],
       licenses: ["MIT"],
       links: %{
