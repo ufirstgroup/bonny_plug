@@ -5,6 +5,10 @@ ExUnit.configure(exclude: [external: true])
 
 ExUnit.start(capture_log: true)
 
+"test_support/bonny_plug/*.exs"
+|> Path.wildcard()
+|> Enum.each(&Code.compile_file/1)
+
 defmodule CompileTimeAssertions do
   defmodule DidNotRaise, do: defstruct(message: nil)
 
