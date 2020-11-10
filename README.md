@@ -1,6 +1,4 @@
-# Bonny Plug
-
-Kubernetes Admission Webooks Plug
+# bonny_plug - Kubernetes Admission Webooks Plug
 
 [![Build Status](https://github.com/ufirstgroup/bonny_plug/workflows/CI/badge.svg)](https://github.com/ufirstgroup/bonny_plug/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/github/ufirstgroup/bonny_plug/badge.svg?branch=master)](https://coveralls.io/github/ufirstgroup/bonny_plug?branch=master)
@@ -8,7 +6,7 @@ Kubernetes Admission Webooks Plug
 [![Documentation](https://img.shields.io/badge/documentation-on%20hexdocs-green.svg)](https://hexdocs.pm/bonny_plug/)
 ![Hex.pm](https://img.shields.io/hexpm/l/bonny_plug.svg?style=flat)
 
-Bonny Plug aims to extend the Kubernetes development framework [Bonny](https://github.com/coryodaniel/bonny) with admission hooks. However, the library can
+`bonny_plug` aims to extend the Kubernetes development framework [Bonny](https://github.com/coryodaniel/bonny) with admission hooks. However, the library can
 be used on its own and has no dependencies to Bonny.
 
 ## Installation
@@ -16,7 +14,7 @@ be used on its own and has no dependencies to Bonny.
 ```elixir
 def deps do
   [
-    {:bonny_plugs, "~> 1.0"}
+    {:bonny_plug, "~> 1.0"}
   ]
 end
 ```
