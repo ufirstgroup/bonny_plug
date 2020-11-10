@@ -5,6 +5,7 @@ ExUnit.configure(exclude: [external: true])
 
 ExUnit.start(capture_log: true)
 
+# In order to get coverage for the BonnyPlug.WebhookHanlder, we need to compile these files when running the tests.
 "test_support/bonny_plug/*.exs"
 |> Path.wildcard()
 |> Enum.each(&Code.compile_file/1)
