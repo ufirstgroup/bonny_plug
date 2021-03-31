@@ -1,5 +1,13 @@
 name: Run tests on versions according to .tool-versions
-on: push
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  MIX_ENV: test
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,6 +24,20 @@ jobs:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}
           experimental-otp: true
+
+      - name: Retrieve Build Cache
+        uses: actions/cache@v1
+        id: build-folder-cache
+        with:
+          path: _build
+          key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-build-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+
+      - name: Retrieve Mix Dependencies Cache
+        uses: actions/cache@v1
+        id: deps-cache
+        with:
+          path: deps
+          key: ${{runner.os}}-${{matrix.otp}}-${{matrix.elixir}}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
       - run: mix local.rebar --force
       - run: mix local.hex --force
