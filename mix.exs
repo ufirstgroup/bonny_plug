@@ -58,11 +58,9 @@ defmodule BonnyPlug.MixProject do
 
   defp dialyzer do
     [
-      flags: [:race_conditions, :no_opaque],
-      plt_add_deps: :transitive,
-      plt_add_apps: [:mix, :public_key],
+      plt_add_apps: [:mix],
       plt_core_path: "priv/plts",
-      plt_file: {:no_warn, "priv/plts/bonny_plug.plt"}
+      plt_local_path: "priv/plts",
     ]
   end
 
