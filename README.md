@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/ufirstgroup/bonny_plug/workflows/CI/badge.svg)](https://github.com/ufirstgroup/bonny_plug/actions?query=workflow%3ACI)
 [![Coverage Status](https://codecov.io/gh/ufirstgroup/bonny_plug/branch/master/graph/badge.svg)](https://codecov.io/gh/ufirstgroup/bonny_plug)
-[![Hex.pm](http://img.shields.io/hexpm/v/bonny_plug.svg?style=flat)](https://hex.pm/packages/bonny_plug)
+[![Hex.pm](http://img.shields.io/hexpm/v/bonny_plug.svg?style=flat&logo=elixir)](https://hex.pm/packages/bonny_plug)
 [![Documentation](https://img.shields.io/badge/documentation-on%20hexdocs-green.svg)](https://hexdocs.pm/bonny_plug/)
 ![Hex.pm](https://img.shields.io/hexpm/l/bonny_plug.svg?style=flat)
 
