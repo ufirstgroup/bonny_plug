@@ -39,7 +39,7 @@ defmodule BonnyPlug.MixProject do
       "coveralls.post": :test,
       "coveralls.html": :test,
       "coveralls.travis": :test,
-      "coveralls.github": :test
+      "coveralls.github": :test,
       "coveralls.json": :test
     ]
   end
