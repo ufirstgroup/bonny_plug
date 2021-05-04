@@ -84,11 +84,33 @@ defmodule BonnyPlug.AdmissionReview.Request do
       ...> BonnyPlug.AdmissionReview.Request.check_immutable(admission_review, ["spec", "immutable"])
       %BonnyPlug.AdmissionReview{request: %{"object" => %{"spec" => %{"immutable" => "new_value"}}, "oldObject" => %{"spec" => %{"immutable" => "value"}}}, response: %{"allowed" => false, "status" => %{"code" => 400, "message" => "The field .spec.immutable is immutable."}}}
   """
-  @spec check_immutable(AdmissionReview.t(), Enum.t()) :: AdmissionReview.t()
+  @spec check_immutable(AdmissionReview.t(), list()) :: AdmissionReview.t()
   def check_immutable(admission_review, field) do
     new_value = get_in(admission_review.request, ["object" | field])
     old_value = get_in(admission_review.request, ["oldObject" | field])
 
     if new_value == old_value, do: admission_review, else: deny(admission_review, "The field .#{Enum.join(field, ".")} is immutable.")
+  end
+
+  @doc """
+  Checks the given field's value against a list of allowed values.
+
+  ## Examples
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "bar"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.check_allowed_values(admission_review, ~w(metadata annotations some/annotation), ["foo", "bar"])
+      %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "bar"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "other"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.check_allowed_values(admission_review, ~w(metadata annotations some/annotation), ["foo", "bar"])
+      %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "other"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{"allowed" => false, "status" => %{"code" => 400, "message" => ~S(The field .metadata.annotations.some/annotation must contain one of the values in ["foo", "bar"] but it's currently set to "other".)}}}
+  """
+  @spec check_allowed_values(AdmissionReview.t(), list(), list()) :: AdmissionReview.t()
+  def check_allowed_values(admission_review, field, allowed_values) do
+    value = get_in(admission_review.request, ["object" | field])
+
+    if value in allowed_values,
+       do: admission_review,
+       else: deny(admission_review, "The field .metadata.annotations.some/annotation must contain one of the values in #{inspect(allowed_values)} but it's currently set to #{inspect(value)}.")
   end
 end

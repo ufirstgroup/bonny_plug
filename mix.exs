@@ -2,7 +2,7 @@ defmodule BonnyPlug.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/ufirstgroup/bonny_plug"
-  @version "1.0.2"
+  @version "1.0.3"
 
   def project do
     [
@@ -52,6 +52,7 @@ defmodule BonnyPlug.MixProject do
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.23", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
+      {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:plug, "~> 1.11"},
       {:yaml_elixir, "~> 2.0"}
     ]

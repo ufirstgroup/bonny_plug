@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
+## Added
+
+* Add `BonnyPlug.AdmissionReview.Request.check_allowed_values/3`.
+  A helper function to check a given field's value against a list of allowed values.
+
 ## [1.0.2] - 2020-11-09
 
 ## Added
