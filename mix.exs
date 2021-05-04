@@ -19,7 +19,7 @@ defmodule BonnyPlug.MixProject do
       dialyzer: dialyzer(),
       docs: [
         main: "readme",
-        extras: ["README.md"],
+        extras: ["README.md", "CHANGELOG.md"],
         source_ref: "v#{@version}",
         source_url: @source_url
       ]
@@ -74,7 +74,7 @@ defmodule BonnyPlug.MixProject do
     [
       name: :bonny_plug,
       description: "Kubernetes Admission Webooks Plug",
-      files: ["lib", "mix.exs", "README*"],
+      files: ["lib", "mix.exs", "README*", "LICENSE*", "CHANGELOG.md"],
       maintainers: ["Michael Ruoss", "Jean-Luc Geering"],
       licenses: ["MIT"],
       links: %{
