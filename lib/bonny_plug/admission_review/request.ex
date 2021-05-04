@@ -93,13 +93,18 @@ defmodule BonnyPlug.AdmissionReview.Request do
   end
 
   @doc """
-  Checks the given field's value against a list of allowed values.
+  Checks the given field's value - if defined - against a list of allowed values. If the field is not defined, the
+  request is considered valid and no error is returned. Use the CRD to define required fields.
 
   ## Examples
 
       iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "bar"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
       ...> BonnyPlug.AdmissionReview.Request.check_allowed_values(admission_review, ~w(metadata annotations some/annotation), ["foo", "bar"])
       %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "bar"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
+
+      iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
+      ...> BonnyPlug.AdmissionReview.Request.check_allowed_values(admission_review, ~w(metadata annotations some/annotation), ["foo", "bar"])
+      %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
 
       iex> admission_review = %BonnyPlug.AdmissionReview{request: %{"object" => %{"metadata" => %{"annotations" => %{"some/annotation" => "other"}}, "spec" => %{}}, "oldObject" => %{"spec" => %{}}}, response: %{}}
       ...> BonnyPlug.AdmissionReview.Request.check_allowed_values(admission_review, ~w(metadata annotations some/annotation), ["foo", "bar"])
@@ -109,8 +114,8 @@ defmodule BonnyPlug.AdmissionReview.Request do
   def check_allowed_values(admission_review, field, allowed_values) do
     value = get_in(admission_review.request, ["object" | field])
 
-    if value in allowed_values,
-       do: admission_review,
-       else: deny(admission_review, "The field .metadata.annotations.some/annotation must contain one of the values in #{inspect(allowed_values)} but it's currently set to #{inspect(value)}.")
+    if is_nil(value) or value in allowed_values,
+      do: admission_review,
+      else: deny(admission_review, "The field .metadata.annotations.some/annotation must contain one of the values in #{inspect(allowed_values)} but it's currently set to #{inspect(value)}.")
   end
 end
