@@ -20,7 +20,7 @@ defmodule BonnyPlug.MixProject do
       docs: [
         main: "readme",
         extras: ["README.md", "CHANGELOG.md"],
-        source_ref: "v#{@version}",
+        source_ref: @version,
         source_url: @source_url
       ]
     ]
@@ -62,7 +62,7 @@ defmodule BonnyPlug.MixProject do
     [
       plt_add_apps: [:mix],
       plt_core_path: "priv/plts",
-      plt_local_path: "priv/plts",
+      plt_local_path: "priv/plts"
     ]
   end
 
@@ -78,7 +78,7 @@ defmodule BonnyPlug.MixProject do
       maintainers: ["Michael Ruoss", "Jean-Luc Geering"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => @source_url,
+        "GitHub" => @source_url
       }
     ]
   end
