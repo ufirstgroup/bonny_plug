@@ -1,4 +1,4 @@
-name: Run tests on versions according to .tool-versions
+name: Elixir Compatibility Matrix
 on:
   push:
     branches: [main]
