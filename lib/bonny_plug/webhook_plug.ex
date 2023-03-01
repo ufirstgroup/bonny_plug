@@ -54,8 +54,8 @@ defmodule BonnyPlug.WebhookPlug do
   @type webhook_type :: :validating_webhook | :mutating_webhook
 
   def init(options) do
-    Keyword.put_new_lazy(options, :handlers, fn
-      -> Application.get_env(:bonny_plug, BonnyPlug.WebhookPlug)[:handlers]
+    Keyword.put_new_lazy(options, :handlers, fn ->
+      Application.get_env(:bonny_plug, BonnyPlug.WebhookPlug)[:handlers]
     end)
   end
 
@@ -68,21 +68,37 @@ defmodule BonnyPlug.WebhookPlug do
         conn
         |> put_resp_content_type("application/json")
         |> send_resp(200, response_body)
-      {:error, code, response_body} -> resp(conn, code, response_body)
+
+      {:error, code, response_body} ->
+        resp(conn, code, response_body)
     end
   end
+
   def call(conn, _), do: send_resp(conn, 404, "Not Found")
 
   @spec process(map(), atom(), Enum.t()) :: {:ok, binary()} | {:error, integer(), binary()}
-  def process(%{"apiVersion" => @api_version, "kind" => @kind, "request" => request}, webhook_type, handlers) do
-    response = request
-    |> AdmissionReview.create()
-    |> Request.allow()
-    |> (&Enum.reduce(handlers, &1, fn (handler, acc) -> Kernel.apply(handler, :process, [acc, webhook_type]) end)).()
-    |> Map.get(:response)
+  def process(
+        %{"apiVersion" => @api_version, "kind" => @kind, "request" => request},
+        webhook_type,
+        handlers
+      ) do
+    response =
+      request
+      |> AdmissionReview.create()
+      |> Request.allow()
+      |> (&Enum.reduce(handlers, &1, fn handler, acc ->
+            Kernel.apply(handler, :process, [acc, webhook_type])
+          end)).()
+      |> Map.get(:response)
 
-    response_body = Jason.encode!(%{"apiVersion" => @api_version, "kind" => @kind, "response" => response})
+    response_body =
+      Jason.encode!(%{"apiVersion" => @api_version, "kind" => @kind, "response" => response})
+
     {:ok, response_body}
   end
-  def process(_, _, _), do: {:error, 400, "Unsupported Payload. This service expects a k8s admission review json document of apiVersion \"admission.k8s.io/v1\"."}
+
+  def process(_, _, _),
+    do:
+      {:error, 400,
+       "Unsupported Payload. This service expects a k8s admission review json document of apiVersion \"admission.k8s.io/v1\"."}
 end

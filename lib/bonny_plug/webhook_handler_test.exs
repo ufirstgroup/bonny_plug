@@ -1,33 +1,38 @@
 defmodule BonnyPlug.WebhookHandlerTest do
   use ExUnit.Case
 
-  alias BonnyPlug.{AdmissionReview, TestWebhookHandlerCRD, TestWebhookHandlerCRDV1Beta1, TestWebhookHandlerResource}
+  alias BonnyPlug.{
+    AdmissionReview,
+    TestWebhookHandlerCRD,
+    TestWebhookHandlerCRDV1Beta1,
+    TestWebhookHandlerResource
+  }
 
   import CompileTimeAssertions
 
   describe "__usage__/1" do
     test "Raises an ArgumentError if nothing passed as option" do
-      assert_compile_time_raise ArgumentError, "You have to pass either", fn ->
+      assert_compile_time_raise(ArgumentError, "You have to pass either", fn ->
         use BonnyPlug.WebhookHandler
-      end
+      end)
     end
 
     test "Raises an ArgumentError if CRD is not found" do
-      assert_compile_time_raise ArgumentError, "was not found", fn ->
+      assert_compile_time_raise(ArgumentError, "was not found", fn ->
         use BonnyPlug.WebhookHandler, crd: "test_support/crds/inexistent.yaml"
-      end
+      end)
     end
 
     test "Raises an ArgumentError if invalid YAML passed as option" do
-      assert_compile_time_raise ArgumentError, "could not be parsed", fn ->
+      assert_compile_time_raise(ArgumentError, "could not be parsed", fn ->
         use BonnyPlug.WebhookHandler, crd: "test_support/crds/invalid.yaml"
-      end
+      end)
     end
 
     test "Raises an ArgumentError if CRD version is not supported" do
-      assert_compile_time_raise ArgumentError, "CRD version not supported.", fn ->
+      assert_compile_time_raise(ArgumentError, "CRD version not supported.", fn ->
         use BonnyPlug.WebhookHandler, crd: "test_support/crds/unsupported_crd.yaml"
-      end
+      end)
     end
   end
 
@@ -66,7 +71,9 @@ defmodule BonnyPlug.WebhookHandlerTest do
         response: %{}
       }
 
-      admission_review = TestWebhookHandlerCRDV1Beta1.process(admission_review, :validating_webhook)
+      admission_review =
+        TestWebhookHandlerCRDV1Beta1.process(admission_review, :validating_webhook)
+
       assert false == admission_review.response["allowed"]
     end
 
@@ -85,18 +92,23 @@ defmodule BonnyPlug.WebhookHandlerTest do
         response: %{}
       }
 
-      admission_review = TestWebhookHandlerResource.process(admission_webhook, :validating_webhook)
+      admission_review =
+        TestWebhookHandlerResource.process(admission_webhook, :validating_webhook)
+
       assert false == admission_review.response["allowed"]
     end
 
     test "does not process request if no resource given" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRD])
       admission_review = %AdmissionReview{request: %{"uid" => "some_uid"}, response: %{}}
-      assert admission_review == TestWebhookHandlerCRD.process(admission_review, :validating_webhook)
+
+      assert admission_review ==
+               TestWebhookHandlerCRD.process(admission_review, :validating_webhook)
     end
 
     test "does not process request for versions that are not served" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRD])
+
       admission_review = %AdmissionReview{
         request: %{
           "uid" => "some_uid",
@@ -108,14 +120,17 @@ defmodule BonnyPlug.WebhookHandlerTest do
         },
         response: %{}
       }
-      assert admission_review == TestWebhookHandlerCRD.process(
-        admission_review,
-        :validating_webhook
-      )
+
+      assert admission_review ==
+               TestWebhookHandlerCRD.process(
+                 admission_review,
+                 :validating_webhook
+               )
     end
 
     test "does not process request if group does not match" do
       Application.put_env(:bonny_plug, :admission_review_webhooks, [TestWebhookHandlerCRD])
+
       admission_review = %AdmissionReview{
         request: %{
           "uid" => "some_uid",
@@ -127,10 +142,12 @@ defmodule BonnyPlug.WebhookHandlerTest do
         },
         response: %{}
       }
-      assert admission_review == TestWebhookHandlerCRD.process(
-        admission_review,
-        :validating_webhook
-      )
+
+      assert admission_review ==
+               TestWebhookHandlerCRD.process(
+                 admission_review,
+                 :validating_webhook
+               )
     end
   end
 end

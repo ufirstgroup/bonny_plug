@@ -68,7 +68,11 @@ defmodule BonnyPlug.AdmissionReview.Request do
   """
   @spec add_warning(AdmissionReview.t(), binary()) :: AdmissionReview.t()
   def add_warning(admission_review, warning) do
-    update_in(admission_review, [Access.key(:response), Access.key("warnings", [])], &([warning | &1]))
+    update_in(
+      admission_review,
+      [Access.key(:response), Access.key("warnings", [])],
+      &[warning | &1]
+    )
   end
 
   @doc """
@@ -89,7 +93,9 @@ defmodule BonnyPlug.AdmissionReview.Request do
     new_value = get_in(admission_review.request, ["object" | field])
     old_value = get_in(admission_review.request, ["oldObject" | field])
 
-    if new_value == old_value, do: admission_review, else: deny(admission_review, "The field .#{Enum.join(field, ".")} is immutable.")
+    if new_value == old_value,
+      do: admission_review,
+      else: deny(admission_review, "The field .#{Enum.join(field, ".")} is immutable.")
   end
 
   @doc """
@@ -116,6 +122,10 @@ defmodule BonnyPlug.AdmissionReview.Request do
 
     if is_nil(value) or value in allowed_values,
       do: admission_review,
-      else: deny(admission_review, "The field .metadata.annotations.some/annotation must contain one of the values in #{inspect(allowed_values)} but it's currently set to #{inspect(value)}.")
+      else:
+        deny(
+          admission_review,
+          "The field .metadata.annotations.some/annotation must contain one of the values in #{inspect(allowed_values)} but it's currently set to #{inspect(value)}."
+        )
   end
 end

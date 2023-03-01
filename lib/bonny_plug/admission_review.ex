@@ -6,9 +6,9 @@ defmodule BonnyPlug.AdmissionReview do
   require Logger
 
   @type t :: %__MODULE__{
-    request: map(),
-    response: map()
-  }
+          request: map(),
+          response: map()
+        }
 
   @fields [
     :request,
