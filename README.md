@@ -1,3 +1,5 @@
+**IPMORTANT NOTE: This library is not maintained anymore. It is replaced by https://github.com/mruoss/k8s_webhoox**
+
 # bonny_plug - Kubernetes Admission Webooks Plug
 
 [![Hex.pm](http://img.shields.io/hexpm/v/bonny_plug.svg?style=flat&logo=elixir)](https://hex.pm/packages/bonny_plug)
